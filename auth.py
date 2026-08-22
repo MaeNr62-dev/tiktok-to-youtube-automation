@@ -20,7 +20,7 @@ def get_authenticated_service():
                 credentials.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
-                credentials = flow.run_local_server(port=0)
+                credentials = flow.run_console()
             with open("token.pickle", "wb") as token:
                 pickle.dump(credentials, token)
         logging.info("Successfully authenticated with YouTube API.")
