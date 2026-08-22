@@ -17,15 +17,20 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Tools
+            - name: Install Tools
         run: |
           python -m pip install --upgrade pip
-          pip install google-api-python-client google-auth-oauthlib google-auth-httplib2 yt-dlp pyktok instaloader
+          pip install google-api-python-client google-auth-oauthlib google-auth-httplib2 yt-dlp pyktok instaloader requests[socks]
 
       - name: Run Robot
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
         run: |
-          yt-dlp "https://www.tiktok.com/@${{ secrets.TIKTOK_USERNAME }}" --download-archive /tmp/archive.txt
+          yt-dlp \
+            --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+            --socket-timeout 30 \
+            --retries 3 \
+            --download-archive /tmp/archive.txt \
+            "https://www.tiktok.com/@${{ secrets.TIKTOK_USERNAME }}"
           python main.py
