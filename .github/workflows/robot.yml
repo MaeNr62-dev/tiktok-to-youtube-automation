@@ -15,18 +15,16 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v4
         with:
-           python-version: '3.10'
+          python-version: '3.10'
 
-       - name: Install Tools
-         run: |
-           python -m pip install --upgrade pip
-           pip install google-api-python-client google-auth-oauthlib google-auth-httplib2 yt-dlp pyktok instaloader requests[socks]
+      - name: Install Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth-oauthlib google-auth-httplib2 yt-dlp pyktok instaloader
 
-       - name: Run Robot
-         env:
-           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-           TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
-         run: |
-           yt-dlp "https://www.tiktok.com/@mae.nr62" --download-archive /tmp/archive.txt
-           yt-dlp "https://www.tiktok.com/@${{ secrets.TIKTOK_USERNAME }}"
-           python main.py
+      - name: Run Robot
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          TIKTOK_USERNAME: mae.nr62
+        run: |
+          python main.py
