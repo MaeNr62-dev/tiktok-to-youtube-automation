@@ -31,5 +31,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           TIKTOK_USERNAME: mae.nr62
+          BROWSER: chrome
+          CHROME_PATH: /usr/bin/google-chrome
         run: |
           python main.py
