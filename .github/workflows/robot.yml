@@ -27,6 +27,5 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           TIKTOK_USERNAME: ${{ secrets.TIKTOK_USERNAME }}
         run: |
-          # Cette ligne télécharge tout votre historique TikTok avant de lancer le programme
-          yt-dlp "https://tiktok.com{{ secrets.TIKTOK_USERNAME }}" --download-archive /tmp/archive.txt
+          yt-dlp "https://tiktok.com" --download-archive /tmp/archive.txt
           python main.py
