@@ -7,13 +7,14 @@ Run this once to generate YOUTUBE_CREDENTIALS_JSON for GitHub secret.
 import requests
 import json
 import sys
+import os
 
 # Your OAuth credentials from Google Cloud Console
 CLIENT_ID = "610789219050-4t5sllktmufb7i56n3pklcbmbi9ut1jf.apps.googleusercontent.com"
 CLIENT_SECRET = "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"
 REDIRECT_URI = "http://localhost:8080/"
 
-def exchange_code_for_token(auth_code):
+def exchange_code_for_token(auth_code, code_verifier=None):
     """Exchange authorization code for access and refresh tokens."""
     token_url = "https://oauth2.googleapis.com/token"
     
@@ -24,6 +25,10 @@ def exchange_code_for_token(auth_code):
         "redirect_uri": REDIRECT_URI,
         "grant_type": "authorization_code"
     }
+    
+    # Add code_verifier if available (PKCE flow)
+    if code_verifier:
+        data["code_verifier"] = code_verifier
     
     print(f"Exchanging authorization code for tokens...")
     response = requests.post(token_url, data=data)
@@ -38,13 +43,17 @@ def exchange_code_for_token(auth_code):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 get_token.py <authorization_code>")
+        print("Usage: python3 get_token.py <authorization_code> [code_verifier]")
         print("\nExample:")
         print("python3 get_token.py '4/0ATsMZqBnPTBKf1KQaeQcUgyTOaTP46KQcJ-Lg6tlADVtnaTObKzqWTydWOOjDR7CuPGZEw'")
+        print("\nWith PKCE (if required):")
+        print("python3 get_token.py '4/0ATsMZqBnPTBKf1KQaeQcUgyTOaTP46KQcJ-Lg6tlADVtnaTObKzqWTydWOOjDR7CuPGZEw' 'E9Mz...'")
         sys.exit(1)
     
     auth_code = sys.argv[1]
-    tokens = exchange_code_for_token(auth_code)
+    code_verifier = sys.argv[2] if len(sys.argv) > 2 else os.environ.get("CODE_VERIFIER")
+    
+    tokens = exchange_code_for_token(auth_code, code_verifier)
     
     if tokens:
         print("\n" + "="*70)
