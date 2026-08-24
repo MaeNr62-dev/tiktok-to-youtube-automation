@@ -5,7 +5,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import logging
 
-SCOPES = ["https://googleapis.com"]
+SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 CREDENTIALS_FILE = "resources/client_secrets.json"
 
 def get_authenticated_service():
@@ -19,8 +19,13 @@ def get_authenticated_service():
                 credentials.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
-                # Utilisation du flux d'authentification console pour serveur distant
-                credentials = flow.run_local_server(port=8080, prompt='consent', open_browser=False)
+                # Pour GitHub Actions (serveur sans interface), utilise run_console()
+                # Pour développement local avec interface, on peut utiliser run_local_server()
+                try:
+                    credentials = flow.run_console()
+                except Exception:
+                    # Fallback si run_console() ne fonctionne pas
+                    credentials = flow.run_local_server(port=8080, prompt='consent', open_browser=False)
                 with open("token.pickle", "wb") as token:
                     pickle.dump(credentials, token)
         logging.info("Successfully authenticated with YouTube API.")
