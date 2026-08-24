@@ -87,8 +87,6 @@ async def download_tiktok_clips(username, download_dir):
                 logging.error(f"Failed to download video {video}: {e}", exc_info=True)
                 continue
 
-        
-     
         logging.info(f"TikTok clips and metadata downloaded successfully to {download_dir}.")
 
     except PermissionError as e:
